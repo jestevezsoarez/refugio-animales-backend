@@ -1,0 +1,11 @@
+{
+  "name": "refugio-backend",
+  "version": "1.0.0",
+  "description": "API RESTful del refugio de animales",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Javier Estevez",
+  "license": "MIT"
+}
