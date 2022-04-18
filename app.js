@@ -6,7 +6,7 @@ var bodyParser = require('body-parser');
 var app = express();
 
 // cargar rutas
-
+var user_routes = require('./routes/user');
 
 // middlewares de body-parser
 app.use(bodyParser.urlencoded({extended: false}));
@@ -16,10 +16,8 @@ app.use(bodyParser.json());
 // configurar cabeceras y cors
 
 
-// rutas body-parser
+// rutas base
+app.use('/api', user_routes); // le pongo el prefijo /api, sino quiero prefijo pongo solo /
 
-app.get('/probando', (req, res) => {
-    res.status(200).send({message: 'Metodo probando'});
-});
 
 module.exports = app;
