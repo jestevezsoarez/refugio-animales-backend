@@ -2,6 +2,7 @@
 
 // Modulos
 var bcrypt = require('bcrypt-nodejs');
+const user = require('../models/user');
 
 // Modelos
 var User = require('../models/user');
@@ -58,9 +59,8 @@ function saveUser(req, res) {
                     });
                 }
             }
-        });
+        });    
     
-    console.log(params);
     } else {
         res.status(200).send({
             message: 'Faltan datos del usuario'
@@ -68,7 +68,37 @@ function saveUser(req, res) {
     }
 }
 
+function login(req, res) {
+    var params = req.body;
+
+    var email = params.email;
+    const password =params.password;
+
+    User.findOne({email: email.toLowerCase()}, (err, user) => {
+        if (err) {
+            res.status(500).send({message: 'Error al comprobar el usuario'});
+        } else {
+            if (user) {
+                bcrypt.compare(password, user.password, (err, check) => {
+                    if (check) {
+                        res.status(200).send({user});
+                    } else {
+                        res.status(404).send({
+                            message: 'La contraseña introducida es incorrecta'
+                        });
+                    }
+                })                
+            } else {
+                res.status(404).send({
+                    message: 'El usuario no existe'
+                });
+            }
+        }
+    })
+}
+
 module.exports = {
     pruebas,
-    saveUser
+    saveUser,
+    login
 };
