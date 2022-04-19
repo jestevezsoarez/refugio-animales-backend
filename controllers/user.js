@@ -30,32 +30,42 @@ function saveUser(req, res) {
         user.role = 'ROLE_USER';
         user.image = null;
 
-        // Cifrar la constraseña
-        bcrypt.hash(params.password, null, null, function(err, hash) {
-            user.password = hash;
+        User.findOne({email: user.email.toLowerCase()}, (err, issetUser) => {
+            if (err) {
+                res.status(500).send({message: 'El usuario no pudo registrarse'});
+            } else {
+                // Si no existe el usuario lo guardo en la base
+                if (!issetUser) {
+                    // Cifrar la constraseña
+                    bcrypt.hash(params.password, null, null, function(err, hash) {
+                        user.password = hash;
 
-            user.save((err, userStored) => {
-                if (err) {
-                    res.status(500).send({message: 'Error al guardar el usuario'});
+                        user.save((err, userStored) => {
+                            if (err) {
+                                res.status(500).send({message: 'Error al guardar el usuario'});
+                            } else {
+                                if(!userStored) {
+                                    res.status(404).send({message: 'No se ha registrado el usuario'});
+                                } else {
+                                    res.status(200).send({user: userStored});
+                                }
+                            }
+                        });
+                    })
                 } else {
-                    if(!userStored) {
-                        res.status(404).send({message: 'No se ha registrado el usuario'});
-                    } else {
-                        res.status(200).send({user: userStored});
-                    }
+                    res.status(200).send({
+                        message: 'El usuario con ese email ya existe'
+                    });
                 }
-            });
-        })
-    } else {
-        res.status(200).send({
-            message: 'Datos del usuario incorrectos'
-        })
-    }
+            }
+        });
     
     console.log(params);
-    // res.status(200).send({
-    //     message: 'Metodo de registro'
-    // });
+    } else {
+        res.status(200).send({
+            message: 'Faltan datos del usuario'
+        });
+    }
 }
 
 module.exports = {
