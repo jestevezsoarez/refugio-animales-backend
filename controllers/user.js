@@ -7,6 +7,9 @@ const user = require('../models/user');
 // Modelos
 var User = require('../models/user');
 
+// Servicios
+var jwt = require('../services/jwt');
+
 // Acciones
 function pruebas(req, res) {
     res.status(200).send({
@@ -81,6 +84,11 @@ function login(req, res) {
             if (user) {
                 bcrypt.compare(password, user.password, (err, check) => {
                     if (check) {
+
+                        if (params.gettoken)
+                            res.status(200).send({
+                                token: jwt.createToken(user)
+                            })
                         res.status(200).send({user});
                     } else {
                         res.status(404).send({
