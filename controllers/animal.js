@@ -39,11 +39,32 @@ function saveAnimal(req, res) {
     } else {
         res.status(200).send({message: 'El nombre del animal es obligatorio'});
     }
-    
+}
+
+function getAnimals(req, res) {
+    // El find recibe un where, lo paso vacio para que traiga todos los animales
+    Animal.find({}).populate({path: 'user'}).exec((err, animals) => {
+        if (err) {
+            res.status(500).send({
+                message: 'Error en la peticion'
+            });
+        } else {
+            if (!animals) {
+                res.status(404).send({
+                    message: 'No hay animales'
+                });
+            } else {
+                res.status(200).send({
+                    animals
+                });
+            }
+        }
+    })
 }
 
 
 module.exports = {
     pruebas,
-    saveAnimal
+    saveAnimal,
+    getAnimals
 };
