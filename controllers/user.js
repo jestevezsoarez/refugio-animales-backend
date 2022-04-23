@@ -182,14 +182,28 @@ function uploadImage(req, res) {
 function getImageFile(req, res) {
     var imageFile = req.params.imageFile;    
     var pathFile = './uploads/users/' + imageFile;
-    
+
     res.sendFile(path.resolve(pathFile), function (err) {
         if (err) {
             if (err.code === 'ENOENT') {
-                return res.status(200).send({message: 'No existe la imagen'});
+                res.status(200).send({message: 'No existe la imagen'});
             }
             else {
                 // handle other errors...
+            }
+        }
+    });
+}
+
+function getKeepers(req, res) {
+    User.find({role:'ROLE_ADMIN'}).exec((err, users) => {
+        if (err) {
+            res.status(500).send({message: 'Error en la peticion'});
+        } else {
+            if (!users) {
+                res.status(404).send({message: 'No hay cuidadores'});
+            } else {
+                res.status(200).send({users});
             }
         }
     });
@@ -202,5 +216,6 @@ module.exports = {
     login,
     updateUser,
     uploadImage,
-    getImageFile
+    getImageFile,
+    getKeepers
 };
