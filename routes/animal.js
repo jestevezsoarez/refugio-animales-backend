@@ -13,6 +13,7 @@ api.get('/pruebas-animales', md_auth.ensureAuth, AnimalController.pruebas);
 api.post('/animal', md_auth.ensureAuth, AnimalController.saveAnimal);
 api.get('/animals', AnimalController.getAnimals);
 api.get('/animal/:id', AnimalController.getAnimal);
+api.put('/animal/:id', md_auth.ensureAuth, AnimalController.updateAnimal);
 
 
 
