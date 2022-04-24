@@ -165,7 +165,25 @@ function getImageFile(req, res) {
     });
 }
 
+function deleteAnimal(req, res) {
+    var animalId = req.params.id;
 
+    Animal.findByIdAndRemove(animalId, (err, animalRemoved) => {
+        if (err) {
+            res.status(500).send({
+                message: 'No se pudo borrar el animal'
+            });
+        } else {
+            if (!animalRemoved) {
+                res.status(404).send({
+                    message: 'No se ha borrado el animal'
+                });
+            } else {
+                res.status(200).send({animal: animalRemoved});
+            }
+        }
+    });
+}
 
 
 module.exports = {
@@ -175,5 +193,6 @@ module.exports = {
     getAnimal,
     updateAnimal,
     uploadImage,
-    getImageFile
+    getImageFile,
+    deleteAnimal
 };
